@@ -14,6 +14,10 @@ body {
     background-color: white;
 }
 
+table {
+    width: 100%;
+}
+
 h1 {
     position: absolute;
     top: 10px;
@@ -38,7 +42,8 @@ small {
 }
 
 .remark-slide-number {
-    font-size: 20px;
+    /*font-size: 20px;*/
+    display: none
 }
 
 a, :visited {
@@ -112,11 +117,11 @@ ul, ol {
     margin-left: 3em;
 }
 
-.fullscreen {
+.fullscreen, .fullscreenw, .boxedimg {
     padding: 0
 }
 
-.fullscreen p {
+.fullscreen p, .fullscreenw p, .boxedimg p {
     margin: 0;
     display: block;
     width: 100%;
@@ -129,6 +134,21 @@ ul, ol {
 .fullscreen img {
     vertical-align: middle;
     height: 681px;
+}
+
+.fullscreenw img {
+    vertical-align: middle;
+    width: 100%;
+}
+
+.boxedimg img {
+    max-width: 90%;
+    max-height: 90%;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .stacked img {
@@ -217,3 +237,49 @@ div.lighten {
 .box1, .box2, .box3, .box4 {
     font-weight: bold;
 }
+
+.ticks2 p, .ticks3 p {
+    line-height: 0.85em;
+}
+
+.ticks2 .tick1, .ticks2 .tick2 {
+        width: 60%;
+}
+
+.ticks3 .tick1, .ticks3 .tick2 {
+        width: 80%;
+}
+
+.tick1, .tick2 {
+    border-bottom: 1px solid #ccc;
+    padding: 0px 4px 4px 0px;
+    display: inline-block;
+    text-align: left;
+    font-size: 0.6em;
+}
+
+.tick1 .em, .tick2 .em {
+    position: absolute;
+    font-size: 0.7em;
+}
+
+.ticks2 .tick1 .em-white_check_mark {
+    left: 614px;
+}
+.ticks2 .tick2 .em-white_check_mark {
+    left: 800px;
+}
+
+.ticks3 .tick1 .em-white_check_mark {
+    left: 520px;
+}
+.ticks3 .tick2 .em-white_check_mark {
+    left: 702px;
+}
+.ticks3 .tick1 .em-palm_tree, .ticks3 .tick2 .em-palm_tree {
+    left: 881px;
+}
+.tick1.faded, .tick2.faded {
+    opacity: 0.2;
+}
+
