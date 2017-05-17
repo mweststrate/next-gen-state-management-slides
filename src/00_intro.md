@@ -73,6 +73,10 @@ There is often a heated debate. I am no neutral party in the discussion, but let
 
 ## immutable trees of data
 
+???
+
+Two years ago, Redux was introduced on this very same conference. And it has set a new level on what we want in terms of DX and predictability.
+
 ---
 
 ![redux](img/redux1.png)
@@ -93,19 +97,19 @@ class: ticks2
     <span style="font-size: 0.6em">Immutable Trees &nbsp;&nbsp;&nbsp; Model Graphs<span>
 </p>
 
-.tick1.appear[cheap snapshots<i class="em em-white_check_mark"></i>]
-.tick2.appear[fine grained updates<i class="em em-white_check_mark"></i>]
-.tick1.appear[tree structure<i class="em em-white_check_mark"></i>]
-.tick2.appear[denormalized data<i class="em em-white_check_mark"></i>]
-.tick1.appear[easy hydration<i class="em em-white_check_mark"></i>]
-.tick2.appear[co-location of actions<i class="em em-white_check_mark"></i>]
-.tick1.appear[protection of data<i class="em em-white_check_mark"></i>]
-.tick1.appear[replayable actions<i class="em em-white_check_mark"></i>]
-.tick2.appear[straight forward actions<i class="em em-white_check_mark"></i>]
-.tick1.appear[devtool support<i class="em em-white_check_mark"></i>]
-.tick2.appear[static analysis / typing<i class="em em-white_check_mark"></i>]
-.tick1.appear[predictable references<i class="em em-white_check_mark"></i>]
-.tick2.appear[predictable references<i class="em em-white_check_mark"></i>]
+.tick1[cheap snapshots<i class="em em-white_check_mark"></i>]
+.tick2[fine grained updates<i class="em em-white_check_mark"></i>]
+.tick1[tree structure<i class="em em-white_check_mark"></i>]
+.tick2[graph structure<i class="em em-white_check_mark"></i>]
+.tick1[easy hydration<i class="em em-white_check_mark"></i>]
+.tick2[co-location of actions<i class="em em-white_check_mark"></i>]
+.tick1[protection of data<i class="em em-white_check_mark"></i>]
+.tick1[replayable actions<i class="em em-white_check_mark"></i>]
+.tick2[straight forward actions<i class="em em-white_check_mark"></i>]
+.tick1[devtool support<i class="em em-white_check_mark"></i>]
+.tick2[static analysis / typing<i class="em em-white_check_mark"></i>]
+.tick1[predictable references<i class="em em-white_check_mark"></i>]
+.tick2[predictable references<i class="em em-white_check_mark"></i>]
 
 ???
 
@@ -114,23 +118,13 @@ Why a tree Trees can be traversed in predicatable, finite order
 
 ## Can we have both?
 
----
-
-class: fullscreenw
-
-![tree](img/tree.jpg)
+.appear[MobX vs Redux: Combining the Opposing Paradigm]
 
 ???
 
-Living trees are awesome. Unless you eat from the wrong one. Then you die.
+Can we have all the cool things of Redux, without it's learning curve?
 
-But that is a feature in itself. I will elaborate on that later.
-
----
-
-class: fullscreenw
-
-![tree](img/eden2.jpg)
+You might now all have digested that. TIme to confuse you with something new
 
 ---
 
@@ -158,6 +152,24 @@ So what if..
 
 ---
 
+class: fullscreenw
+
+![tree](img/tree.jpg)
+
+???
+
+Living trees are awesome. Unless you eat from the wrong one. Then you die.
+
+But that is a feature in itself. I will elaborate on that later.
+
+---
+
+class: fullscreenw
+
+![tree](img/eden2.jpg)
+
+---
+
 class: boxedimg
 
 ![img](img/mst3.png)
@@ -179,6 +191,10 @@ class: boxedimg
 class: boxedimg
 
 ![img](img/mst6.png)
+
+---
+
+Trees of trees; fully recursive
 
 ---
 
@@ -266,13 +282,11 @@ class: boxedimg
 
 ???
 
-[Img: seed -> tree]
+Type information
+* Design time + code generator
+* Run time
 
-.appear[Type information]
-.appear[* Design time + code generator]
-.appear[* Run time]
-
-.appear[Mattia & Ganti]
+Mattia & Ganti
 
 time for code
 
@@ -350,9 +364,16 @@ class: boxedimg
 ---
 
 ```javascript
+store.todos[0] = Todo.create({ title: "Prep slides" })
+store.todos[0].toggle()
+```
+
+.appear[
+```javascript
 store.todos[0] = { title: "Prep slides" }
 store.todos[0].toggle()
 ```
+]
 
 ???
 
@@ -369,7 +390,7 @@ class: ticks3
 .tick1[cheap snapshots<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick2[fine grained updates<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick1[tree structure<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick2.faded[denormalized data<i class="em em-white_check_mark"></i>]
+.tick2.faded[graph structure<i class="em em-white_check_mark"></i>]
 .tick1[easy hydration<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick2[co-location of actions<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick1.faded[protection of data<i class="em em-white_check_mark"></i>]
@@ -381,6 +402,11 @@ class: ticks3
 .tick2.faded[predictable references<i class="em em-white_check_mark"></i>]
 
 ---
+
+Demo
+
+---
+
 
 ```javascript
 import { types } from 'mobx-state-tree'
@@ -412,15 +438,6 @@ why 'learn redux'?
 
 Actually, if you check out the sources, you will notice the original reducer unit tests are still in there
 
-
----
-
-Demo
-
-???
-
-Devtools
-
 ---
 
 ## Actions
@@ -442,9 +459,6 @@ const Todo = types.model({
 
 * Instances can only be modified through actions
 * Actions can only modify own subtree
-* Replayable
-* Method invocation _produces_ action description
-* Middleware support
 
 ---
 
@@ -460,6 +474,14 @@ Error: [mobx-state-tree] Cannot modify 'Todo@/todos/0',
 the object is protected and can only be modified by using an action.
 ```
 ]
+
+---
+
+# Actions
+
+* Replayable
+* Method invocation _produces_ action description
+* Middleware support
 
 ---
 
@@ -495,15 +517,15 @@ Use case syncing actions over websockets with other clients
 ---
 
 ```javascript
-import { clone } from "mobx-state-tree"
+import { clone, recordActions } from "mobx-state-tree"
 
 const tempStore = clone(store)
 ```
 
 .appear[
 ```javascript
-function clone(x) {
-    return getType(x).create(getSnapshot(x))
+function clone(tree) {
+    return getType(tree).create(getSnapshot(tree))
 }
 ```
 ]
@@ -541,7 +563,7 @@ class: ticks3
 .tick1.faded[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick2.faded[fine grained updates<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1.faded[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2.faded[denormalized data<i class="em em-white_check_mark"></i>]
+.tick2.faded[graph structure<i class="em em-white_check_mark"></i>]
 .tick1.faded[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick2.faded[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1[protection of data<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
@@ -551,6 +573,169 @@ class: ticks3
 .tick2.faded[static analysis / typing<i class="em em-white_check_mark"></i>]
 .tick1.faded[predictable references<i class="em em-white_check_mark"></i>]
 .tick2.faded[predictable references<i class="em em-white_check_mark"></i>]
+
+---
+
+Elrond picture
+
+???
+
+"Death is gift to men" (Elrond in a LOTR movie)
+
+---
+
+# References
+
+```javascript
+function logTodo(todo: Todo) {
+    setTimeout(
+        () => console.log(todo.title),
+        1000
+    )
+}
+
+logTodo(store.todos.get("c137"))
+```
+
+???
+
+what does `todo` parameter refer to?
+* the state of the passed todo at a specific point in time?
+* the concept of the passed todo, regardless what state it is in currently
+
+---
+
+4 seasons
+
+???
+
+Refer to the state of the tree at present, or just the concept
+
+---
+
+Picture
+
+---
+
+# References
+
+```javascript
+function logTodo(todo: Todo) {
+    setTimeout(
+        () => console.log(todo.title),
+        1000
+    )
+}
+
+logTodo(store.todos.get("c137"))
+```
+
+|  Immutable Trees | Mutable Model Graphs |
+| --- | ---- | --- |
+| .appear[`title` won't have changed] | .appear[`title` might have changed] |
+| .appear[`title` will probably be stale] | .appear[`title` will not be stale] |
+
+???
+
+artifical example. but what if it is no log, but a debounced function to send todo to backend?
+
+---
+
+```
+BookStore {
+    books: Books[]
+}
+
+Cart {
+    entries: BookEntry[]
+}
+
+BookEntry {
+    amount: number
+    book: Book
+}
+```
+
+1. .appear[Fill a cart]
+2. .appear[Refresh books from server]
+3. .appear[Cart view should be consistent]
+   * .appear[Immutable tree: normalize; symbolic ref]
+   * .appear[Mutable graph: recycle `Book` instances]
+
+???
+
+Or use a mutable graph with symbolic references to get best of both world, but that is a different story
+
+---
+
+# Liveliness guarantees
+
+```
+logTodo(store.todos.get("c137"))
+store.removeTodo("c137")
+```
+
+.appear[
+```
+Error: [mobx-state-tree] This object has died and is no longer part
+of a state tree. It cannot be used anymore.
+```
+]
+
+.appear[
+```javascript
+logTodo(getSnapshot(store.todos.get("c137")))
+```
+]
+
+???
+
+"Death is gift to men" (Elrond in a LOTR movie)
+
+---
+
+class: fullscreenw
+
+![tree](img/eden2.jpg)
+
+---
+
+# Liveliness guarantees
+
+* .appear[Reconcile instances]
+* .appear[Throw when trying to use orphaned objects]
+* .appear[Defends against accidental stale reads]
+
+
+???
+
+Immutability defends against accidental modifications
+
+MST against accidental stale reads
+
+---
+
+# Back to graphs
+
+```javascript
+const BookEntry = types.model({
+    amount: types.number,
+    book: types.reference(Book)
+})
+
+bookEntry.book = bookStore.books[0]
+console.log(bookEntry.book.title) // OK
+console.dir(getSnapshot(bookEntry))
+```
+
+.appear[
+```javascript
+{
+    amount: 3,
+    book: "24"
+}
+```
+]
 
 ---
 
@@ -588,123 +773,13 @@ Type system that does not only work at runtime, it also works at design time
 
 ---
 
-class: fullscreenw
-
-![tree](img/eden2.jpg)
-
----
-
-# References
-
-```javascript
-function logTodo(todo: Todo) {
-    setTimeout(
-        () => console.log(todo.title),
-        1000
-    )
-}
-```
-
-|  Immutable Trees | Mutable Model Graphs |
-| --- | ---- | --- |
-| .appear[`title` won't have changed] | .appear[`title` might have changed] |
-| .appear[`title` will probably be stale] | .appear[`title` will not be stale] |
-
----
-
-```
-BookStore {
-    books: Books[]
-}
-
-Cart {
-    entries: BookEntry[]
-}
-
-BookEntry {
-    amount: number
-    book: Book
-}
-```
-
-1. .appear[Fill a cart]
-2. .appear[Refresh books from server]
-3. .appear[Cart view should be consistent]
-   * .appear[Immutable tree: normalize; symbolic ref]
-   * .appear[Mutable graph: recycle `Book` instances]
-
-???
-
-Or use a mutable graph with symbolic references to get best of both world, but that is a different story
-
----
-
-# Livelyness guarantees
-
-* .appear[Reconcily instances automatically]
-* .appear[Throw when trying to use orphaned objects]
-* .appear[Defends against accidental stale reads]
-
-???
-
-"Death is gift to men" (Elrond in a LOTR movie)
-
-Immutability defends against accidental modifications
-
----
-
-# Livelyness guarantees
-
-```
-const oldTodo = store.todos[0]
-store.removeTodo(0)
-
-console.log(oldTodo.title)
-```
-
-.appear[
-```
-Error: [mobx-state-tree] This object has died and is no longer part
-of a state tree. It cannot be used anymore. Blah blah.
-```
-]
-
-???
-
-"Death is gift to men" (Elrond in a LOTR movie)
-
----
-
-# First class support for references
-
-```javascript
-const BookEntry = types.model({
-    amount: types.number,
-    book: types.reference(Book)
-})
-
-bookEntry.book = bookStore.books[0]
-console.log(bookEntry.book.title) // OK
-console.dir(getSnapshot(bookEntry))
-```
-
-.appear[
-```javascript
-{
-    amount: 3,
-    book: "24"
-}
-```
-]
-
----
 
 class: ticks3
 
 .tick1.faded[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick2.faded[fine grained updates<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1.faded[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[denormalized data<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick2[graph structure<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick1.faded[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick2.faded[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1.faded[protection of data<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
@@ -722,7 +797,7 @@ class: ticks3
 .tick1[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick2[fine grained updates<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[denormalized data<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[graph structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick2[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1[protection of data<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
@@ -746,17 +821,20 @@ class: ticks3
 
 ---
 
-Can we combine the best features of immutable and mutable state trees and create the next generation of state management?
-
-Try to go home early tweet
-
-https://twitter.com/codylindley/status/862679380228685826
-
 ???
 
-True for MobX, mobx-state-tree tries to take that idea to the next level
+Can we combine the best features of immutable and mutable state trees and create the next generation of state management?
+
+Front end developer handbook
 
 ---
 
-Release
+# When is it available?
 
+.appear[now!]
+
+Star!
+
+---
+
+TODO Visit booth prizes thingy
