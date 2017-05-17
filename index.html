@@ -338,6 +338,24 @@ class: fullscreen
 
 ---
 
+class: fullscreenw
+
+![tree](img/20170517_113857.jpg)
+
+---
+
+class: fullscreenw
+
+![tree](img/eden2.jpg)
+
+???
+
+Living trees are awesome. Unless you eat from the wrong one. Then you die.
+
+But that is a feature in itself. I will elaborate on that later.
+
+---
+
 `redux || mobx`
 
 .appear[
@@ -350,11 +368,29 @@ There is often a heated debate. I am no neutral party in the discussion, but let
 
 ---
 
-## state management; a recap
+MobX vs Redux: Comparing the Opposing Paradigm
+
+.appear[
+        <i class="em em-arrow_double_down"></i>
+
+MobX vs Redux: *Combining* the Opposing Paradigm
+]
+
+???
+
+Can we have all the cool things of Redux, without it's learning curve?
+
+You might now all have digested that. TIme to confuse you with something new
 
 ---
 
-## mutable graphs of class instances
+## mobx-state-tree LOGO
+
+*A living state tree*
+
+---
+
+## mutable graphs of models
 
 ---
 
@@ -413,21 +449,11 @@ class: ticks2
 ???
 
 Why a tree Trees can be traversed in predicatable, finite order
----
 
-## Can we have both?
-
-.appear[MobX vs Redux: Combining the Opposing Paradigm]
-
-???
-
-Can we have all the cool things of Redux, without it's learning curve?
-
-You might now all have digested that. TIme to confuse you with something new
 
 ---
 
-## Snapshots are awesome
+## Snapshots are awesome<i class="em em-camera"></i>
 
 .appear[What if I could get them for free after each mutation?]
 
@@ -441,75 +467,25 @@ So what if..
 
 ---
 
-![img](img/mst1.png)
-
----
-
-## mobx-state-tree LOGO
-
-*The living tree*
-
----
-
-class: fullscreenw
-
-![tree](img/tree.jpg)
-
-???
-
-Living trees are awesome. Unless you eat from the wrong one. Then you die.
-
-But that is a feature in itself. I will elaborate on that later.
-
----
-
-class: fullscreenw
-
-![tree](img/eden2.jpg)
-
----
-
 class: boxedimg
 
-![img](img/mst3.png)
+![img](img/tree_store.png)
 
 ---
 
-class: boxedimg
-
-![img](img/mst4.png)
-
----
-
-class: boxedimg
-
-![img](img/mst5.png)
-
----
-
-class: boxedimg
-
-![img](img/mst6.png)
-
----
-
-Trees of trees; fully recursive
+Demo
 
 ---
 
 ```javascript
-class Todo {
-    @observable title: string = "Get Coffee"
-    @observable done: boolean = false
-
-    toggle() {
-        this.done = !this.done
-    }
+class Book {
+    @observable title: string
+    @observable price: number
 
     @computed get snapshot() {
         return {
             title: this.title,
-            done: this.done
+            price: this.number
         }
     }
 }
@@ -519,26 +495,14 @@ class Todo {
 
 ```javascript
 class Store {
-    @observable todos: Todo[] = []
+    @observable books: Book[] = []
 
     @computed get snapshot() {
         return {
-            todos: this.todos.map(todo => todo.snapshot)
+            todos: this.books.map(book => book.snapshot)
         }
     }
 }
-```
-
----
-
-```javascript
-const history = []
-const store = new Store()
-
-reaction(
-    () => store.snapshot,
-    snapshot => history.push(snapshot)
-)
 ```
 
 ---
@@ -561,13 +525,12 @@ class: boxedimg
 
 ---
 
-# But...
+class: boxedimg
 
-* `get snapshot` boilerplate
-* How to get back from a seed to a full tree?
-* Cycles are tricky
+![img](img/seeds.png)
 
 ---
+
 
 class: boxedimg
 
@@ -579,15 +542,24 @@ class: boxedimg
 
 ![img](img/seed2.png)
 
-???
+---
 
-Type information
-* Design time + code generator
-* Run time
+* How to get back from a seed to a full tree? <i class="em em-deciduous_tree"></i>
+* `get snapshot` boilerplate <i class="em em-confused"></i>
 
-Mattia & Ganti
+---
 
-time for code
+Demo
+
+---
+
+## Type Information!<i class="em em-dizzy"></i>
+
+---
+
+class: boxedimg
+
+![img](img/mst3.png)
 
 ---
 
@@ -612,71 +584,84 @@ const snapshot = getSnapshot(instance)
 ---
 
 ```javascript
-const Todo = types.model({
+const Book = types.model({
     title: types.string,
-    done: false
+    price: types.number
 }, {
-    toggle() {
-        this.done = !this.done
+    setPrice(newPrice) {
+        this.price = newPrice
     }
 })
 ```
 
-```javascript
-const Store = types.model({
-    todos: types.array(Todo)
-})
-```
-
----
-
-```javascript
-const store = Store.create({
-    todos: [{
-        title: "Get coffee"
-    }]
-})
-```
 .appear[
 ```javascript
-store.todos[0].toggle()
+const Store = types.model({
+    books: types.array(Book)
+})
 ```
 ]
 
 ---
 
-class: boxedimg
-
-![img](img/seed3.png)
-
-???
-
-Promised to talk about real trees
-Enting
-
----
-
-class: boxedimg
-
-![img](img/seed4.png)
-
----
-
 ```javascript
-store.todos[0] = Todo.create({ title: "Prep slides" })
-store.todos[0].toggle()
+const store = Store.create({
+    books: [{
+        title:
+            "The Hidden Life of Trees: What They Feel, How They Communicate",
+        price: 24.95
+    }]
+})
+
 ```
 
 .appear[
 ```javascript
-store.todos[0] = { title: "Prep slides" }
-store.todos[0].toggle()
+store.books[0].setPrice(13.57)
+```
+]
+
+---
+
+```javascript
+store.books.push(Book.create({ title: "A Tree Grows in Brooklyn" }))
+```
+
+.appear[
+```javascript
+store.books.push({ title: "A Tree Grows in Brooklyn" })
 ```
 ]
 
 ???
 
 When modifying the tree at any point, type is infered from the typesystem and applied
+
+---
+
+# Type Checking
+
+```javascript
+const store = Store.create({
+    books: [{
+        price: "24.95"
+    }]
+})
+```
+
+.appear[
+```
+Error while converting `{"books":[{"price":"24.95"}]}` to `Store`:
+ at path "/books/0/title" value `undefined` is not assignable to type: `string`.
+ at path "/books/0/price" value `"24.95"` is not assignable to type: `number`.
+```
+]
+
+---
+
+# Type Checking
+
+![img](img/tserror.png)
 
 ---
 
@@ -687,7 +672,7 @@ class: ticks3
 </p>
 
 .tick1[cheap snapshots<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick2[fine grained updates<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick2.faded[fine grained updates<i class="em em-white_check_mark"></i>]
 .tick1[tree structure<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick2.faded[graph structure<i class="em em-white_check_mark"></i>]
 .tick1[easy hydration<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
@@ -696,7 +681,7 @@ class: ticks3
 .tick1.faded[replayable actions<i class="em em-white_check_mark"></i>]
 .tick2[straight forward actions<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick1.faded[devtool support<i class="em em-white_check_mark"></i>]
-.tick2.faded[static analysis / typing<i class="em em-white_check_mark"></i>]
+.tick2[static analysis / typing<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick1.faded[predictable references<i class="em em-white_check_mark"></i>]
 .tick2.faded[predictable references<i class="em em-white_check_mark"></i>]
 
@@ -704,8 +689,363 @@ class: ticks3
 
 Demo
 
+???
+
+MobX powered
+
+Patches
+
 ---
 
+## Actions
+
+```javascript
+const Book = types.model({
+    title: types.string,
+    price: types.number
+}, {
+    setPrice(newPrice) {
+        this.price = newPrice
+    }
+})
+```
+
+---
+
+# Actions
+
+* Instances can only be modified through actions
+* Actions can only modify own subtree
+
+---
+
+# Actions
+
+```javascript
+store.books[0].title = "I hate trees!"
+```
+
+.appear[
+```
+Cannot modify 'Book@/books/0',
+the object is protected and can only be modified by using an action.
+```
+]
+
+---
+
+Demo
+
+---
+
+# Actions
+
+* Replayable
+* Method invocation _produces_ action description
+* Middleware support
+
+---
+
+# Serializable actions
+
+```javascript
+onAction(store, action => {
+    console.dir(action)
+})
+
+store.books[0].setPrice(12.95)
+```
+
+.appear[
+```
+{
+    "name":"setPrice",
+    "path":"/books/0",
+    "args":[12.95]
+}
+```
+]
+
+---
+
+## Use case: user modifies complex data tree in a wizard
+
+???
+
+Use case syncing actions over websockets with other clients
+
+---
+
+```javascript
+import { clone, recordActions } from "mobx-state-tree"
+
+const bookCopy = clone(store.books[0])
+```
+
+.appear[
+```javascript
+function clone(tree) {
+    return getType(tree).create(getSnapshot(tree))
+}
+```
+]
+
+---
+
+```javascript
+import { clone, recordActions } from "mobx-state-tree"
+
+const bookCopy = clone(store)
+const recorder = recordActions(bookCopy)
+```
+
+.appear[
+```javascript
+...user modifies the book in a wizard
+And upon commit...
+```
+]
+
+.appear[
+```javascript
+recorder.replay(store.books[0])
+```
+]
+
+---
+
+class: ticks3
+
+<p style="position:relative;left: 106px;font-style:italic;">
+    <span style="font-size: 0.6em">Immutable Trees &nbsp;&nbsp;&nbsp; Model Graphs&nbsp;&nbsp;&nbsp; Mobx-State-Tree<span>
+</p>
+
+.tick1.faded[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[fine grained updates<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick1.faded[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2.faded[graph structure<i class="em em-white_check_mark"></i>]
+.tick1.faded[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2.faded[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[protection of data<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick1[replayable actions<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick2.faded[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1.faded[devtool support<i class="em em-white_check_mark"></i>]
+.tick2.faded[static analysis / typing<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1.faded[predictable references<i class="em em-white_check_mark"></i>]
+.tick2.faded[predictable references<i class="em em-white_check_mark"></i>]
+
+---
+
+class: fullscreen
+
+![img](img/elrond.jpg)
+
+???
+
+"Death is gift to men" (Elrond in a LOTR movie)
+
+---
+
+# References
+
+```javascript
+function printPrice(book: Book) {
+    setTimeout(
+        () => console.log(book.price),
+        1000
+    )
+}
+
+printPrice(store.books.get("ISBN-123"))
+```
+
+???
+
+what does `book` parameter refer to?
+* the state of the passed book at a specific point in time?
+* the concept of the passed book, regardless what state it is in currently
+
+---
+
+class: boxedimg
+
+![img](img/seasons.jpg)
+
+???
+
+Refer to the state of the tree at present, or just the concept
+
+---
+
+class: boxedimg
+
+![img](img/refs.png)
+
+---
+
+# References
+
+```javascript
+function printPrice(book: Book) {
+    setTimeout(
+        () => console.log(book.price),
+        1000
+    )
+}
+
+printPrice(store.books.get("ISBN-123"))
+```
+
+|  Immutable Trees | Mutable Model Graphs |
+| --- | ---- | --- |
+| .appear[`price` won't have changed] | .appear[`price` might have changed] |
+| .appear[`price` might be stale] | .appear[`price` will not be stale] |
+
+???
+
+artifical example. but what if it is no log, but a debounced function to send todo to backend?
+
+---
+
+# References
+
+```javascript
+function printPrice(book: Book) {
+    setTimeout(
+        () => console.log(book.price),
+        1000
+    )
+}
+```
+
+```javascript
+printPrice(store.books.get("ISBN-123"))
+```
+
+```javascript
+printPrice(getSnapshot(store.books.get("ISBN-123")))
+```
+
+---
+
+# Liveliness guarantees
+
+```
+printPrice(store.books.get("ISBN-123"))
+store.removeBook("ISBN-123")
+
+// what will be printed?
+```
+
+.appear[
+```
+This object has died and is no longer part
+of a state tree. It cannot be used anymore.
+```
+]
+
+.appear[
+```javascript
+printPrice(getSnapshot(store.books.get("ISBN-123")))
+```
+]
+
+???
+
+Immutability defends against accidental modifications
+
+Defends against accidental stale reads
+
+---
+
+class: fullscreenw
+
+![tree](img/eden2.jpg)
+
+---
+
+# Graphs
+
+```
+bookStore
+   - books
+       - book A
+       - book B
+   - cart
+       - entry 1
+           - book A ?
+       - entry 2
+           - book B ?
+```
+
+---
+
+# Graphs
+
+```javascript
+const CartEntry = types.model({
+    amount: types.number,
+    book: types.reference(Book)
+})
+
+cartEntry.book = bookStore.books[0]
+
+console.log(bookEntry.book.title) // OK
+
+console.dir(getSnapshot(bookEntry))
+```
+
+.appear[
+```javascript
+{
+    amount: 3,
+    book: "24"
+}
+```
+]
+
+---
+
+class: ticks3
+
+.tick1.faded[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2.faded[fine grained updates<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1.faded[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[graph structure<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick1.faded[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2.faded[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1.faded[protection of data<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1.faded[replayable actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2.faded[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[devtool support<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick2.faded[static analysis / typing<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[predictable references<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick2[predictable references<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+
+---
+
+class: ticks3
+
+.tick1[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[fine grained updates<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[graph structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[protection of data<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[replayable actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[devtool support<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[static analysis / typing<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[predictable references<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[predictable references<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+
+---
+
+
+Demo
+
+---
 
 ```javascript
 import { types } from 'mobx-state-tree'
@@ -739,380 +1079,9 @@ Actually, if you check out the sources, you will notice the original reducer uni
 
 ---
 
-## Actions
-
-```javascript
-const Todo = types.model({
-    title: types.string,
-    done: false
-}, {
-    toggle() {
-        this.done = !this.done
-    }
-})
-```
-
----
-
-# Actions
-
-* Instances can only be modified through actions
-* Actions can only modify own subtree
-
----
-
-# Protection against modifications
-
-```javascript
-store.todos[0].done = false
-```
-
-.appear[
-```
-Error: [mobx-state-tree] Cannot modify 'Todo@/todos/0',
-the object is protected and can only be modified by using an action.
-```
-]
-
----
-
-# Actions
-
-* Replayable
-* Method invocation _produces_ action description
-* Middleware support
-
----
-
-# Serializable actions
-
-```javascript
-onAction(store, (action, next) => {
-    console.dir(action)
-    return next()
-})
-
-store.todos[0].toggle()
-```
-
-.appear[
-```
-{
-    "name":"toggle",
-    "path":"/todos/0",
-    "args":[]
-}
-```
-]
-
----
-
-## Use case: user modifies complex data tree in a wizard
-
-???
-
-Use case syncing actions over websockets with other clients
-
----
-
-```javascript
-import { clone, recordActions } from "mobx-state-tree"
-
-const tempStore = clone(store)
-```
-
-.appear[
-```javascript
-function clone(tree) {
-    return getType(tree).create(getSnapshot(tree))
-}
-```
-]
-
----
-
-```javascript
-import { clone, recordActions } from "mobx-state-tree"
-
-const tempStore = clone(store)
-const recorder = recordActions(tempStore)
-```
-
-.appear[
-```javascript
-...user modifies the tempStore in a wizard
-And upon commit...
-```
-]
-
-.appear[
-```javascript
-recorder.replay(store)
-```
-]
-
----
-
-class: ticks3
-
-<p style="position:relative;left: 106px;font-style:italic;">
-    <span style="font-size: 0.6em">Immutable Trees &nbsp;&nbsp;&nbsp; Model Graphs&nbsp;&nbsp;&nbsp; Mobx-State-Tree<span>
-</p>
-
-.tick1.faded[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2.faded[fine grained updates<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1.faded[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2.faded[graph structure<i class="em em-white_check_mark"></i>]
-.tick1.faded[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2.faded[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[protection of data<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick1[replayable actions<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick2.faded[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[devtool support<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick2.faded[static analysis / typing<i class="em em-white_check_mark"></i>]
-.tick1.faded[predictable references<i class="em em-white_check_mark"></i>]
-.tick2.faded[predictable references<i class="em em-white_check_mark"></i>]
-
----
-
-Elrond picture
-
-???
-
-"Death is gift to men" (Elrond in a LOTR movie)
-
----
-
-# References
-
-```javascript
-function logTodo(todo: Todo) {
-    setTimeout(
-        () => console.log(todo.title),
-        1000
-    )
-}
-
-logTodo(store.todos.get("c137"))
-```
-
-???
-
-what does `todo` parameter refer to?
-* the state of the passed todo at a specific point in time?
-* the concept of the passed todo, regardless what state it is in currently
-
----
-
-4 seasons
-
-???
-
-Refer to the state of the tree at present, or just the concept
-
----
-
-Picture
-
----
-
-# References
-
-```javascript
-function logTodo(todo: Todo) {
-    setTimeout(
-        () => console.log(todo.title),
-        1000
-    )
-}
-
-logTodo(store.todos.get("c137"))
-```
-
-|  Immutable Trees | Mutable Model Graphs |
-| --- | ---- | --- |
-| .appear[`title` won't have changed] | .appear[`title` might have changed] |
-| .appear[`title` will probably be stale] | .appear[`title` will not be stale] |
-
-???
-
-artifical example. but what if it is no log, but a debounced function to send todo to backend?
-
----
-
-```
-BookStore {
-    books: Books[]
-}
-
-Cart {
-    entries: BookEntry[]
-}
-
-BookEntry {
-    amount: number
-    book: Book
-}
-```
-
-1. .appear[Fill a cart]
-2. .appear[Refresh books from server]
-3. .appear[Cart view should be consistent]
-   * .appear[Immutable tree: normalize; symbolic ref]
-   * .appear[Mutable graph: recycle `Book` instances]
-
-???
-
-Or use a mutable graph with symbolic references to get best of both world, but that is a different story
-
----
-
-# Liveliness guarantees
-
-```
-logTodo(store.todos.get("c137"))
-store.removeTodo("c137")
-```
-
-.appear[
-```
-Error: [mobx-state-tree] This object has died and is no longer part
-of a state tree. It cannot be used anymore.
-```
-]
-
-.appear[
-```javascript
-logTodo(getSnapshot(store.todos.get("c137")))
-```
-]
-
-???
-
-"Death is gift to men" (Elrond in a LOTR movie)
-
----
-
-class: fullscreenw
-
-![tree](img/eden2.jpg)
-
----
-
-# Liveliness guarantees
-
-* .appear[Reconcile instances]
-* .appear[Throw when trying to use orphaned objects]
-* .appear[Defends against accidental stale reads]
-
-
-???
-
-Immutability defends against accidental modifications
-
-MST against accidental stale reads
-
----
-
-# Back to graphs
-
-```javascript
-const BookEntry = types.model({
-    amount: types.number,
-    book: types.reference(Book)
-})
-
-bookEntry.book = bookStore.books[0]
-console.log(bookEntry.book.title) // OK
-console.dir(getSnapshot(bookEntry))
-```
-
-.appear[
-```javascript
-{
-    amount: 3,
-    book: "24"
-}
-```
-]
-
----
-
-## Type System
-
----
-
-# Runtime type checks
-
-```javascript
-Store.create({
-   todos: [{
-       turtle: "Get tea"
-   }]
-})
-```
-
-.appear[
-```
-Error: [mobx-state-tree] Value '{\"todos\":[{\"turtle\":\"Get tea\"}]}'
-is not assignable to type: Store, expected an instance of Store or a snapshot like
-'{ todos: { title: string; done: boolean? }[] }' instead.
-```
-]
-
-???
-
-Type system that does not only work at runtime, it also works at design time
-
----
-
-# Design time type checks
-
-![img](img/tserror.png)
-
----
-
-
-class: ticks3
-
-.tick1.faded[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2.faded[fine grained updates<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1.faded[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[graph structure<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick1.faded[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2.faded[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1.faded[protection of data<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1.faded[replayable actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2.faded[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1.faded[devtool support<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[static analysis / typing<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick1[predictable references<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick2[predictable references<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-
----
-
-class: ticks3
-
-.tick1[cheap snapshots<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[fine grained updates<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[tree structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[graph structure<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[easy hydration<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[co-location of actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[protection of data<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[replayable actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[devtool support<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[static analysis / typing<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[predictable references<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[predictable references<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-
----
-
 # ...and more...
 
 * Composable; every node is a tree in itself
-* JSON Patch support
 * Middleware
 * Full MobX compatibility
 * Full fledged type system: models, lists, maps, union, maybe, defaults, refinements...
