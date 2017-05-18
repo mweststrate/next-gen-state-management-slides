@@ -91,23 +91,49 @@ You might now all have digested that. TIme to confuse you with something new
 
 ---
 
-## mutable graphs of models
+## mobx-state-tree LOGO
+
+The best ideas
+
+The best practices
+
+The best productivity
 
 ---
+
+# Mutable Model Graphs
+
+<br/>
+<br/>
 
 ![graph1](img/graph1.png)
 
 ---
 
+# Mutable Model Graphs
+
+<br/>
+<br/>
+
 ![graph2](img/graph2.png)
 
 ---
+
+# Mutable Model Graphs
+
+<br/>
+<br/>
 
 ![graph3](img/graph3.png)
 
 ---
 
-## immutable trees of data
+# Immutable Data Trees
+
+<br/>
+<br/>
+
+![redux](img/redux1.png)
 
 ???
 
@@ -115,13 +141,19 @@ Two years ago, Redux was introduced on this very same conference. And it has set
 
 ---
 
-![redux](img/redux1.png)
+# Immutable Data Trees
 
----
+<br/>
+<br/>
 
 ![redux](img/redux2.png)
 
 ---
+
+# Immutable Data Trees
+
+<br/>
+<br/>
 
 ![redux](img/redux3.png)
 
@@ -154,7 +186,7 @@ Why a tree Trees can be traversed in predicatable, finite order
 
 ---
 
-## Snapshots are awesome<i class="em em-camera"></i>
+## Snapshots Are Awesome<i class="em em-camera"></i>
 
 .appear[What if I could get them for free after each mutation?]
 
@@ -232,18 +264,8 @@ class: boxedimg
 
 ---
 
-
-class: boxedimg
-
-![img](img/seed1.png)
-
----
-
-class: boxedimg
-
-![img](img/seed2.png)
-
----
+<img src="img/seed1.png" width="350px"/>
+<img src="img/seed2.png" width="350px"/>
 
 * How to get back from a seed to a full tree? <i class="em em-deciduous_tree"></i>
 * `get snapshot` boilerplate <i class="em em-confused"></i>
@@ -256,6 +278,12 @@ Demo
 
 ## Type Information!<i class="em em-dizzy"></i>
 
+.appear[Compile time type checks]
+
+.appear[Run time type checks]
+
+.appear[Behavior]
+
 ---
 
 class: boxedimg
@@ -263,6 +291,8 @@ class: boxedimg
 ![img](img/mst3.png)
 
 ---
+
+# Composing Types
 
 ```javascript
 import {types, getSnapshot} from "mobx-state-tree"
@@ -283,6 +313,8 @@ const snapshot = getSnapshot(instance)
 ]
 
 ---
+
+# Composing Types
 
 ```javascript
 const Book = types.model({
@@ -305,6 +337,8 @@ const Store = types.model({
 
 ---
 
+# Composing Types
+
 ```javascript
 const store = Store.create({
     books: [{
@@ -324,6 +358,8 @@ store.books[0].setPrice(13.57)
 
 ---
 
+# Composing Types
+
 ```javascript
 store.books.push(Book.create({ title: "A Tree Grows in Brooklyn" }))
 ```
@@ -334,13 +370,19 @@ store.books.push({ title: "A Tree Grows in Brooklyn" })
 ```
 ]
 
+.appear[
+```javascript
+store.books[0].setPrice(13.57)
+```
+]
+
 ???
 
 When modifying the tree at any point, type is infered from the typesystem and applied
 
 ---
 
-# Type Checking
+# Run Time Type Checking
 
 ```javascript
 const store = Store.create({
@@ -360,9 +402,30 @@ Error while converting `{"books":[{"price":"24.95"}]}` to `Store`:
 
 ---
 
+# Design Time Type Checking
+
+<br/>
+<br/>
+
+.appear[
+![img](img/tserror2.png)
+]
+
+---
+
 # Type Checking
 
-![img](img/tserror.png)
+TComb inspired
+
+collections, refinements, unions, literals, recursive types
+
+<img src="img/gcanti.png" height="200px" style="border-radius:10px; margin-right: 20px;"/>
+<img src="img/mattia.jpg" height="200px" style="border-radius:10px"/>
+
+???
+
+Mattia Manzati https://twitter.com/@mattiamanzati) and
+Giulio Canti https://twitter.com/GiulioCanti),
 
 ---
 
@@ -398,7 +461,7 @@ Patches
 
 ---
 
-## Actions
+# Actions
 
 ```javascript
 const Book = types.model({
@@ -428,7 +491,7 @@ store.books[0].title = "I hate trees!"
 
 .appear[
 ```
-Cannot modify 'Book@/books/0',
+Error: Cannot modify 'Book@/books/0',
 the object is protected and can only be modified by using an action.
 ```
 ]
@@ -447,7 +510,7 @@ Demo
 
 ---
 
-# Serializable actions
+# Actions
 
 ```javascript
 onAction(store, action => {
@@ -469,7 +532,7 @@ store.books[0].setPrice(12.95)
 
 ---
 
-## Use case: user modifies complex data tree in a wizard
+## Use Case: Modify Complex Data In Wizard
 
 ???
 
@@ -629,7 +692,7 @@ printPrice(getSnapshot(store.books.get("ISBN-123")))
 
 ---
 
-# Liveliness guarantees
+# References
 
 ```
 printPrice(store.books.get("ISBN-123"))
@@ -640,7 +703,7 @@ store.removeBook("ISBN-123")
 
 .appear[
 ```
-This object has died and is no longer part
+Error: This object has died and is no longer part
 of a state tree. It cannot be used anymore.
 ```
 ]
@@ -653,9 +716,19 @@ printPrice(getSnapshot(store.books.get("ISBN-123")))
 
 ???
 
+Defends against those kind of bugs, where while debugging, you actually are looking at the wrong object without realizing for a while.
+
 Immutability defends against accidental modifications
 
 Defends against accidental stale reads
+
+---
+
+## mobx-state-tree
+
+Protection against uncoordinated modifications
+
+Protection against stale reads
 
 ---
 
@@ -675,13 +748,17 @@ bookStore
    - cart
        - entry 1
            - book A ?
+           - quantity
        - entry 2
            - book B ?
+           - quantity
 ```
 
 ---
 
 # Graphs
+
+<br/>
 
 ```javascript
 const CartEntry = types.model({
@@ -780,30 +857,35 @@ Actually, if you check out the sources, you will notice the original reducer uni
 
 ---
 
-# ...and more...
+## mobx-state-tree LOGO
 
-* Composable; every node is a tree in itself
-* Middleware
-* Full MobX compatibility
-* Full fledged type system: models, lists, maps, union, maybe, defaults, refinements...
-* Thanks! [Mattia Manzati](https://twitter.com/@mattiamanzati) and [Giulio Canti](https://twitter.com/GiulioCanti)
+The best ideas
 
----
+The best practices
+
+The best productivity
 
 ???
 
-Can we combine the best features of immutable and mutable state trees and create the next generation of state management?
-
-Front end developer handbook
-
----
-
-# When is it available?
-
-.appear[now!]
+When is it available?
 
 Star!
 
----
+???
+
+Is it completely ready?
+
+No.
+
+But, worse is better.
+
+Let's publish!
 
 TODO Visit booth prizes thingy
+
+---
+
+.background[
+![img](img/tree-hug.jpg)
+]
+

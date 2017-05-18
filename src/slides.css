@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Playfair+Display|Raleway');
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display|Raleway|Archivo+Black');
 
 h1, h2, h3 {
-    font-family: 'Playfair Display', serif;
-    letter-spacing: 4px;
+    /*font-family: 'Playfair Display', serif;*/
+    font-family: 'Archivo Black';
+    font-weight: normal;
 }
 
 body {
