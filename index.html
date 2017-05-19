@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Next Generation State Management</title>
+		<title>slides</title>
 		<style>
 			@import url('https://fonts.googleapis.com/css?family=Playfair+Display|Raleway|Archivo+Black');
 
@@ -298,8 +298,21 @@ div.lighten {
 		<textarea id="source">
 <!-- 00_intro.md-->
 
-<img src="img/mobx2.png" height="80px" />
+<img src="img/eden2.jpg" style="    position: absolute;
+    left: 0px;
+    top: -65px;
+    width: 100%;"/>
 
+<div style="    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 50%;
+    background: white;
+    height: 700px;
+">
+<br/><br/>
+<img src="img/mobx2.png" height="80px" />
+<img src="img/logo.png" style="height:80px"/>
 ## Next Generation State Management
 
 <small>
@@ -309,7 +322,10 @@ Michel Weststrate - @mweststrate
 </small>
 <br/><br/>
 
-<img src="img/mendix-logo.png" height="80px" /><br/>
+<img src="img/mendix-logo.png" height="60px" /><br/>
+
+
+<div>
 
 ---
 
@@ -385,19 +401,23 @@ You might now all have digested that. TIme to confuse you with something new
 
 ---
 
-## mobx-state-tree LOGO
+<img src="img/logo.png" style="height:150px"/>
 
-*A living state tree*
+## mobx-state-tree
+
+*A living, opinionated, state tree*
 
 ---
 
-## mobx-state-tree LOGO
+<img src="img/logo.png" style="height:150px"/>
 
-The best ideas
+## mobx-state-tree
 
-The best practices
-
-The best productivity
+The best ideas<i class="em em-bulb"></i>
+<br/>+<br/>
+The best practices<i class="em em-construction_worker"></i>
+<br/>=<br/>
+The best productivity<i class="em em-running"></i>
 
 ---
 
@@ -476,8 +496,8 @@ class: ticks2
 .tick2[straight forward actions<i class="em em-white_check_mark"></i>]
 .tick1[devtool support<i class="em em-white_check_mark"></i>]
 .tick2[static analysis / typing<i class="em em-white_check_mark"></i>]
-.tick1[predictable references<i class="em em-white_check_mark"></i>]
-.tick2[predictable references<i class="em em-white_check_mark"></i>]
+.tick1[ref-by-state<i class="em em-white_check_mark"></i>]
+.tick2[ref-by-identity<i class="em em-white_check_mark"></i>]
 
 ???
 
@@ -576,6 +596,23 @@ Demo
 
 ---
 
+
+```javascript
+import { onSnapshot, applySnapshot } from "mobx-state-tree"
+
+const history = []
+
+onSnapshot(store, snapshot => {
+    history.push(snapshot)
+})
+
+replay(index) {
+    applySnapshot(store, history[index])
+}
+```
+
+---
+
 ## Type Information!<i class="em em-dizzy"></i>
 
 .appear[Compile time type checks]
@@ -603,6 +640,7 @@ const Type = types.model(properties, actions)
 .appear[
 ```javascript
 const instance = Type.create(snapshot)
+instance.someAction()
 ```
 ]
 
@@ -746,12 +784,12 @@ class: ticks3
 .tick2[straight forward actions<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick1.faded[devtool support<i class="em em-white_check_mark"></i>]
 .tick2[static analysis / typing<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick1.faded[predictable references<i class="em em-white_check_mark"></i>]
-.tick2.faded[predictable references<i class="em em-white_check_mark"></i>]
+.tick1.faded[ref-by-state<i class="em em-white_check_mark"></i>]
+.tick2.faded[ref-by-identity<i class="em em-white_check_mark"></i>]
 
 ---
 
-Demo
+Patches Demo
 
 ???
 
@@ -807,28 +845,6 @@ Demo
 * Replayable
 * Method invocation _produces_ action description
 * Middleware support
-
----
-
-# Actions
-
-```javascript
-onAction(store, action => {
-    console.dir(action)
-})
-
-store.books[0].setPrice(12.95)
-```
-
-.appear[
-```
-{
-    "name":"setPrice",
-    "path":"/books/0",
-    "args":[12.95]
-}
-```
-]
 
 ---
 
@@ -895,8 +911,8 @@ class: ticks3
 .tick2.faded[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1.faded[devtool support<i class="em em-white_check_mark"></i>]
 .tick2.faded[static analysis / typing<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1.faded[predictable references<i class="em em-white_check_mark"></i>]
-.tick2.faded[predictable references<i class="em em-white_check_mark"></i>]
+.tick1.faded[ref-by-state<i class="em em-white_check_mark"></i>]
+.tick2.faded[ref-by-identity<i class="em em-white_check_mark"></i>]
 
 ---
 
@@ -1008,12 +1024,6 @@ of a state tree. It cannot be used anymore.
 ```
 ]
 
-.appear[
-```javascript
-printPrice(getSnapshot(store.books.get("ISBN-123")))
-```
-]
-
 ???
 
 Defends against those kind of bugs, where while debugging, you actually are looking at the wrong object without realizing for a while.
@@ -1021,6 +1031,12 @@ Defends against those kind of bugs, where while debugging, you actually are look
 Immutability defends against accidental modifications
 
 Defends against accidental stale reads
+
+---
+
+class: fullscreenw
+
+![img](img/swing.jpg)
 
 ---
 
@@ -1097,8 +1113,8 @@ class: ticks3
 .tick2.faded[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1[devtool support<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 .tick2.faded[static analysis / typing<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[predictable references<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
-.tick2[predictable references<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick1[ref-by-state<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
+.tick2[ref-by-identity<i class="em em-white_check_mark"></i>.appear[<i class="em em-palm_tree"></i>]]
 
 ---
 
@@ -1115,11 +1131,10 @@ class: ticks3
 .tick2[straight forward actions<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick1[devtool support<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 .tick2[static analysis / typing<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick1[predictable references<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
-.tick2[predictable references<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick1[ref-by-state<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
+.tick2[ref-by-identity<i class="em em-white_check_mark"></i><i class="em em-palm_tree"></i>]
 
 ---
-
 
 Demo
 
@@ -1157,21 +1172,21 @@ Actually, if you check out the sources, you will notice the original reducer uni
 
 ---
 
-## mobx-state-tree LOGO
+<img src="img/logo.png" style="height:150px"/>
 
-The best ideas
+## MST: Combining The Opposing Paradigms
 
-The best practices
-
-The best productivity
+The best ideas<i class="em em-bulb"></i>
+<br/>+<br/>
+The best practices<i class="em em-construction_worker"></i>
+<br/>=<br/>
+The best productivity<i class="em em-running"></i>
 
 ???
 
 When is it available?
 
 Star!
-
-???
 
 Is it completely ready?
 
@@ -1184,6 +1199,16 @@ Let's publish!
 TODO Visit booth prizes thingy
 
 ---
+
+<div style="position: absolute;
+    z-index: 1000;
+    top: 150px;
+    background: white;
+    width: 106%;
+    margin-left: -4em;
+    padding: 20px;">
+    <i class="em em-star"></i>https://github.com/mobxjs/mobx-state-tree<i class="em em-star"></i>
+</div>
 
 .background[
 ![img](img/tree-hug.jpg)
